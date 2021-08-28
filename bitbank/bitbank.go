@@ -23,14 +23,14 @@ type Ticker struct {
 	} `json:"data"`
 }
 
-func GetTicker(){
+func GetTicker() string{
+  var ticker Ticker
+  var result string
   resp, err := http.Get("https://public.bitbank.cc/tickers")
 
   if err != nil{
     log.Fatal(err)
   }
-
-  var ticker Ticker
 
   if err = json.NewDecoder(resp.Body).Decode(&ticker); err != nil{
     fmt.Println(err)
@@ -39,8 +39,9 @@ func GetTicker(){
     sell, _ := strconv.ParseFloat(v.Sell, 64)
     open, _ := strconv.ParseFloat(v.Open, 64)
     sum := (sell - open) / open * 100
-    fmt.Printf("通貨: %v, 24時間前の始値: %v\n", v.Pair, sum)
+    result = fmt.Sprintf("通貨: %v, 24時間前の始値: %v\n", v.Pair, sum)
   }
+  return result
 
   defer resp.Body.Close()
 
